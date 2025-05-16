@@ -57,10 +57,30 @@ sales %>%
         plot.caption = element_text(hjust = 0, face = "italic"),
         plot.title.position = "plot",
         plot.caption.position =  "plot", 
-        # legend.position = c(0.05, 0.9), 
+        legend.position = "none",
         panel.background = element_rect(fill = "white", color = NA),
         plot.background = element_rect(fill = "white", color = NA) 
     ) +
+    # Add text in last bar
+    geom_text(
+        data = sales %>% 
+            filter(year == 2024) %>% 
+            filter(type != 'pev') %>%
+            arrange(factor(type, levels = c("icev", "phev", "bev"))) %>%
+            mutate(
+                # Calculate cumulative sums for positioning
+                ymax = cumsum(sales),
+                ymin = lag(ymax, default = 0),
+                # Position labels in the middle of each segment
+                y_pos = (ymin + ymax) / 2,
+                label = str_to_upper(type)
+            ),
+        mapping = aes(x = year, y = y_pos, label = label),
+        color = c('white', 'white', 'black'),
+        family = font_main, 
+        fontface = "bold"
+    ) + 
+    # Add PEV sales above bars
     geom_text(
         data = sales %>% 
             filter(type == 'pev') %>% 
@@ -81,8 +101,7 @@ sales %>%
         family = font_main
     )
 
-
 ggsave(
     here::here('figs', 'annual-sales.png'),
-    width = 8, height = 6
+    width = 7, height = 6
 )
