@@ -1,7 +1,7 @@
 
 You can use this DOI to cite this repository:
 
-[![DOI](https://zenodo.org/badge/16878932.svg)](https://zenodo.org/doi/10.5281/zenodo.16878932)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16878932.svg)](https://doi.org/10.5281/zenodo.16878932)
 
 This repository contains the raw data and replication code to create the charts used in the manuscript I authored titled:
 
