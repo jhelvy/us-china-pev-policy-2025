@@ -1,21 +1,12 @@
+# Data sources
 
-# china-sales-exports.csv
+## china-sales-exports.csv
 
-Contains annual sales and exports data extracted from individual market sales pages on marklines.com
+Contains annual sales and exports data extracted from individual market sales pages on marklines.com.
 
-Web pages were saved as:
+Web pages were saved as in the "china-sales-exports" folder.
 
-- 2024.html
-- 2023.html
-- 2022.html
-- 2021.html
-- 2020.html
-- 2019.html
-- 2018.html
-- 2017.html
-- 2016.html
-
-- Individual web page urls:
+Individual web page urls:
 
 - https://www.marklines.com/en/statistics/flash_sales/salesfig_china_2015
 - https://www.marklines.com/en/statistics/flash_sales/salesfig_china_2016
@@ -28,12 +19,18 @@ https://www.marklines.com/en/statistics/flash_sales/automotive-sales-in-china-by
 https://www.marklines.com/en/statistics/flash_sales/automotive-sales-in-china-by-month-2023
 - https://www.marklines.com/en/statistics/flash_sales/automotive-sales-in-china-by-month-2024
 
-# car_specs_us.parquet
+## car_specs_us.parquet
 
 US vehicle specifications data, scraped from https://carsheet.io/
 
 Full code to replicate the scraping is available at https://github.com/jhelvy/carsheet
 
-# car_specs_china.parquet
+## car_specs_china.parquet
 
 China vehicle specifications data, scraped from https://www.autocango.com
+
+## US PEV sales data
+
+US PEV sales data are from Argonne National Laboratory:
+
+Argonne National Laboratory, Light Duty Electric Drive Vehicles Monthly Sales Updates (2025). https://www.anl.gov/esia/light-duty-electric-drive-vehicles-monthly-sales-updates.

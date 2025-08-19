@@ -1,5 +1,11 @@
 
-This repository contains the raw data and replication code to create two charts used in a manuscript I wrote titled "How Collaboration With China Can Revitalize American Automotive Innovation"
+You can use this DOI to cite this repository:
+
+[![DOI](https://zenodo.org/badge/16878932.svg)](https://zenodo.org/doi/10.5281/zenodo.16878932)
+
+This repository contains the raw data and replication code to create the charts used in the manuscript I authored titled:
+
+"How collaboration with China can revitalize American automotive innovation"
 
 The key figures are:
 
@@ -14,3 +20,5 @@ The second is reproduced by running the script `fig-range-price.R`. For this one
 - `figs/range-price-us-china-class-2024-labels.pdf`
 
 Since the labeled data points have poor placement in these, a hand-edited final version is created as `figs/range-price-us-china-class-2024-labels-edit.png`
+
+Detailed descriptions of the data sources can be found in the [README file](https://github.com/jhelvy/us-china-pev-policy-2025/blob/main/data/README.md) in the "data" folder.
