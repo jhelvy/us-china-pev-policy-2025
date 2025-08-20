@@ -9,16 +9,15 @@ This repository contains the raw data and replication code to create the charts 
 
 The key figures are:
 
-- `figs/annual-sales.png`
-- `figs/range-price-us-china-class-2024-labels-edit.png`
+- `figs/fig1-range-price-edit`
+- `figs/fig2-annual-sales`
 
-The first is reproduced by running the script `fig-annual-sales.R`
+Each are saved as a vector graphic (pdf version) and static image (png version).
 
-The second is reproduced by running the script `fig-range-price.R`. For this one, the script generates two files:
+Figure 1 is reproduced by running the script `fig1-range-price.R`. Since the labeled data points have poor placement in the `figs/fig1-range-price` file, a hand-edited final version is created as `figs/fig1-range-price-edit` where I manually positioned some of the labels. I made the edits in the pdf (vector graphic) version, then saved it as the png version.
 
-- `figs/range-price-us-china-class-2024-labels.png`
-- `figs/range-price-us-china-class-2024-labels.pdf`
+Figure 2 is reproduced by running the script `fig2-china-sales.R`.
 
-Since the labeled data points have poor placement in these, a hand-edited final version is created as `figs/range-price-us-china-class-2024-labels-edit.png`
+The raw data used to create these figures is in the "data" folder, and the processed data needed only to re-create these figures is in the "data_processed" folder.
 
 Detailed descriptions of the data sources can be found in the [README file](https://github.com/jhelvy/us-china-pev-policy-2025/blob/main/data/README.md) in the "data" folder.
