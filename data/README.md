@@ -29,6 +29,8 @@ Full code to replicate the scraping is available at https://github.com/jhelvy/ca
 
 China vehicle specifications data, scraped from https://www.autocango.com
 
+Full code to replicate the scraping is available at https://github.com/jhelvy/autocango
+
 ## US PEV sales data
 
 US PEV sales data are from Argonne National Laboratory:
