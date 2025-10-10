@@ -10,7 +10,7 @@ color_icev <- "grey60"
 color_bev <- "springgreen2"
 color_phev <- "springgreen4"
 
-fig2 <- read_csv(here::here('data', 'china-sales-exports.csv')) %>%
+figs1 <- read_csv(here::here('data', 'china-sales-exports.csv')) %>%
   filter(!is.na(sales)) %>%
   filter(type != 'nev') %>%
   select(year, type, sales) %>%
@@ -29,9 +29,9 @@ fig2 <- read_csv(here::here('data', 'china-sales-exports.csv')) %>%
   mutate(type = str_to_upper(type))
 
 # Save formatted plot data
-write_csv(fig2, here::here('data_processed', 'fig2-annual-sales.csv'))
+write_csv(figs1, here::here('data_processed', 'figs1-annual-sales.csv'))
 
-fig2 %>%
+figs1 %>%
   mutate(type = factor(type, c('BEV', 'PHEV', 'ICEV'))) %>%
   ggplot() +
   geom_col(
@@ -65,7 +65,7 @@ fig2 %>%
   ) +
   # Add text in last bar
   geom_text(
-    data = fig2 %>%
+    data = figs1 %>%
       filter(year == 2024) %>%
       filter(type != 'pev') %>%
       arrange(factor(type, levels = c("ICEV", "PHEV", "BEV"))) %>%
@@ -84,7 +84,7 @@ fig2 %>%
   ) +
   # Add PEV sales above bars
   geom_text(
-    data = fig2 %>%
+    data = figs1 %>%
       mutate(pev = type != 'ICEV') %>%
       group_by(year) %>%
       mutate(all = sum(sales)) %>%
@@ -113,13 +113,13 @@ fig2 %>%
   )
 
 ggsave(
-  here::here('figs', 'fig2-annual-sales.png'),
+  here::here('figs', 'figs1-annual-sales.png'),
   width = 7,
   height = 6
 )
 
 ggsave(
-  here::here('figs', 'fig2-annual-sales.pdf'),
+  here::here('figs', 'figs1-annual-sales.pdf'),
   width = 7.5,
   height = 6,
   device = cairo_pdf
