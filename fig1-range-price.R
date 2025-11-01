@@ -388,12 +388,11 @@ ggsave(
 # Version with 30% range reduction for Chinese BEVs
 
 dt_adjusted <- dt_combined %>%
-  # filter(country == 'USA') %>%  # Turn on for USA only version
   filter(powertrain == 'BEV') %>%
   filter(model_year == 2024) %>%
   mutate(
     price = price * 1000,
-    range_mi = range_mi * 0.7
+    range_mi = ifelse(country == 'China', range_mi * 0.7, range_mi)
   )
 
 dt_adjusted %>%
