@@ -15,20 +15,18 @@ The app is best viewed in landscape mode on a mobile device.
 
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 800
+#| viewerHeight: 600
 
 library(shiny)
-library(tidyverse)
-library(cowplot)
-library(ggtext)
-library(ggrepel)
+library(plotly)
 
 # Load preprocessed data ----
-fig1 <- read_csv('https://raw.githubusercontent.com/jhelvy/us-china-pev-policy-2025/refs/heads/main/data_processed/fig1-range-price.csv', show_col_types = FALSE)
+fig1 <- read.csv(
+  'https://raw.githubusercontent.com/jhelvy/us-china-pev-policy-2025/refs/heads/main/data_processed/fig1-range-price.csv'
+)
 
 # Plotting parameters
 colors <- list('China' = '#E41A1C', 'USA' = '#2171B5')
-font_main <- 'sans'
 ylim <- 120000
 
 # UI ----
@@ -79,7 +77,7 @@ ui <- fluidPage(
   fluidRow(
     column(
       12,
-      plotOutput("range_price_plot", height = "360px", width = "880px")
+      plotlyOutput("range_price_plot", height = "360px")
     )
   ),
 
@@ -108,23 +106,17 @@ server <- function(input, output) {
 
     # Apply adjustment based on selection
     if (input$adjust_country == "china") {
-      data <- data %>%
-        mutate(
-          range_mi = ifelse(
-            country == 'China',
-            range_mi / adjustment_factor,
-            range_mi
-          )
-        )
+      data$range_mi <- ifelse(
+        data$country == 'China',
+        data$range_mi / adjustment_factor,
+        data$range_mi
+      )
     } else if (input$adjust_country == "usa") {
-      data <- data %>%
-        mutate(
-          range_mi = ifelse(
-            country == 'USA',
-            range_mi * adjustment_factor,
-            range_mi
-          )
-        )
+      data$range_mi <- ifelse(
+        data$country == 'USA',
+        data$range_mi * adjustment_factor,
+        data$range_mi
+      )
     }
 
     return(data)
@@ -133,7 +125,7 @@ server <- function(input, output) {
   # Create subtitle based on adjustment
   plot_subtitle <- reactive({
     if (input$adjust_country == "none") {
-      return("China offers more affordable options across all range categories")
+      return(NULL)
     } else if (input$adjust_country == "china") {
       return(paste0(
         "China ranges reduced by ",
@@ -150,74 +142,87 @@ server <- function(input, output) {
   })
 
   # Render plot
-  output$range_price_plot <- renderPlot({
+  output$range_price_plot <- renderPlotly({
     data <- adjusted_data()
 
-    plot <- data %>%
-      ggplot() +
-      geom_point(
-        aes(
-          x = range_mi,
-          y = price,
-          color = country
-        ),
-        size = 1.5,
-        alpha = 0.6
-      ) +
-      facet_wrap(vars(class), nrow = 1) +
-      theme_minimal_grid(font_family = font_main) +
-      scale_y_continuous(
-        breaks = seq(0, ylim, 20000),
-        labels = scales::dollar
-      ) +
-      scale_x_continuous(
-        breaks = seq(0, 600, 150)
-      ) +
-      coord_cartesian(
-        xlim = c(0, 600),
-        ylim = c(0, ylim)
-      ) +
-      scale_color_manual(values = c(unlist(colors))) +
-      labs(
-        x = 'Range (miles)',
-        y = 'Price ($USD)',
-        title = "Price vs. Range for all Model Year 2024 BEVs in <span style='color:#E41A1C'>China</span> and the <span style='color:#2171B5'>USA</span>",
-        subtitle = plot_subtitle()
-      ) +
-      theme(
-        plot.title.position = "plot",
-        plot.caption.position = "plot",
-        plot.title = element_markdown(family = font_main, size = 16),
-        plot.subtitle = element_text(size = 12),
-        legend.position = 'none',
-        panel.background = element_rect(fill = "white", color = NA),
-        plot.background = element_rect(fill = "white", color = NA),
-        strip.background = element_rect(fill = "gray", color = NA),
-        strip.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        axis.text = element_text(size = 10)
-      ) +
-      panel_border() +
-      geom_text_repel(
-        data = data %>%
-          mutate(vehicle = ifelse(target_model, vehicle, '')),
-        aes(
-          x = range_mi,
-          y = price,
-          color = country,
-          label = vehicle
-        ),
-        size = 3,
-        family = font_main,
-        force = 50,
-        box.padding = 1,
-        segment.color = "grey50",
-        min.segment.length = 0,
-        max.overlaps = Inf,
-        seed = 9
-      )
+    # Create separate plots for each class
+    plot_list <- lapply(
+      c("Car", "SUV", "Pickup Truck"),
+      function(vehicle_class) {
+        class_data <- data[data$class == vehicle_class, ]
 
-    print(plot)
+        plot_ly(
+          data = class_data,
+          x = ~range_mi,
+          y = ~price,
+          color = ~country,
+          colors = c('China' = '#E41A1C', 'USA' = '#2171B5'),
+          type = 'scatter',
+          mode = 'markers',
+          marker = list(size = 6, opacity = 0.6),
+          text = ~ paste0(
+            "<b>",
+            vehicle,
+            "</b><br>",
+            "Range: ",
+            round(range_mi, 0),
+            " miles<br>",
+            "Price: $",
+            format(price, big.mark = ",", scientific = FALSE)
+          ),
+          hovertemplate = '%{text}<extra></extra>',
+          showlegend = FALSE
+        ) %>%
+          layout(
+            xaxis = list(
+              title = "Range (miles)",
+              range = c(0, 600),
+              dtick = 150
+            ),
+            yaxis = list(
+              title = "Price ($USD)",
+              range = c(0, ylim),
+              dtick = 20000,
+              tickformat = "$,.0f"
+            ),
+            annotations = list(
+              list(
+                text = vehicle_class,
+                x = 0.5,
+                y = 1.05,
+                xref = "paper",
+                yref = "paper",
+                showarrow = FALSE,
+                font = list(size = 12)
+              )
+            ),
+            margin = list(t = 30, b = 30, l = 50, r = 5)
+          )
+      }
+    )
+
+    # Combine subplots
+    subplot(
+      plot_list,
+      nrows = 1,
+      shareY = TRUE,
+      titleX = TRUE
+    ) %>%
+      layout(
+        title = list(
+          text = paste0(
+            "Price vs. Range for all Model Year 2024 BEVs in ",
+            "<span style='color:#E41A1C'>China</span> and the ",
+            "<span style='color:#2171B5'>USA</span><br>",
+            "<sub>",
+            plot_subtitle(),
+            "</sub>"
+          ),
+          font = list(size = 12)
+        ),
+        showlegend = FALSE,
+        margin = list(t = 50, b = 30)
+      )
   })
 }
 
