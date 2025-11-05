@@ -1,3 +1,22 @@
+---
+format: 
+  html:
+    resources: 
+      - shinylive-sw.js
+filters:
+  - shinylive
+---
+
+<center>
+This can take ~30s to load as it runs entirely in your browser...just leave the window open until it loads<br>
+
+The app is best viewed in landscape mode on a mobile device.
+</center>
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 800
+
 library(shiny)
 library(tidyverse)
 library(cowplot)
@@ -5,7 +24,7 @@ library(ggtext)
 library(ggrepel)
 
 # Load preprocessed data ----
-fig1 <- read_csv('data_processed/fig1-range-price.csv', show_col_types = FALSE)
+fig1 <- read_csv('https://raw.githubusercontent.com/jhelvy/us-china-pev-policy-2025/refs/heads/main/data_processed/fig1-range-price.csv', show_col_types = FALSE)
 
 # Plotting parameters
 colors <- list('China' = '#E41A1C', 'USA' = '#2171B5')
@@ -204,3 +223,4 @@ server <- function(input, output) {
 
 # Run app ----
 shinyApp(ui = ui, server = server)
+```

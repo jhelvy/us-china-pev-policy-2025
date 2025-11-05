@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: _site
+  preview:
+    browser: true
+  render:
+    - "index.qmd"
+  resources: 
+    - shinylive-sw.js
+    - "description.Rmd"
+
+website:  
+  repo-url: https://github.com/jhelvy/us-china-pev-policy-2025
+  repo-actions: [edit, issue]
+  title: "Title"
+  navbar:
+    search: false
+    left:
+      - text: "Screener"
+        file: index.qmd
+    right: 
+      - icon: github
+        href: https://github.com/jhelvy/us-china-pev-policy-2025
+  page-footer:
+    center:
+      - text: "Site made with <a href='https://quarto.org/' target='_blank'><img src='https://quarto.org/favicon.png' width=12> quarto</a>, <a href='https://posit-dev.github.io/r-shinylive/' target='_blank'>shinylive</a>, and rage"
+format:
+  html:
+    theme: [default, theme.scss]
+    page-layout: full
+    toc: true

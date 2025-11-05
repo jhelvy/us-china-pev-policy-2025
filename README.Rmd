@@ -1,0 +1,24 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  warning    = FALSE,
+  message    = FALSE,
+  comment    = "#>",
+  fig.path   = "man/figures/",
+  fig.retina = 3
+)
+```
+
+[![Shinylive](https://img.shields.io/badge/Shinylive-2.0.0-blue)](https://posit-dev.github.io/r-shinylive/)
+[![GitHub stars](https://img.shields.io/github/stars/jhelvy/us-china-pev-policy-2025?style=social)](https://github.com/jhelvy/us-china-pev-policy-2025)
+
+## Source code for the [Title](https://jhelvy.github.io/us-china-pev-policy-2025/) app
+
+```{r child="description.Rmd"}
+```
