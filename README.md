@@ -27,4 +27,22 @@ Figure 2 is reproduced by running the script `fig2-china-sales.R`.
 
 The raw data used to create these figures is in the "data" folder, and the processed data needed only to re-create these figures is in the "data_processed" folder.
 
+## Interactive Shiny App
+
+An interactive Shiny app is available to explore Figure 1 with adjustable range conversion factors:
+
+```r
+# Install required packages if needed
+install.packages(c("shiny", "tidyverse", "cowplot", "ggtext", "ggrepel"))
+
+# Run the app from the repository root
+shiny::runApp("app.R")
+```
+
+The app allows you to:
+
+- Interactively adjust the range conversion factor (slider from 0% to 50%)
+- Choose whether to adjust China ranges (EPA) or USA ranges (CLTC)
+- View real-time updates to the scatter plot as you adjust parameters
+
 Detailed descriptions of the data sources can be found in the [README file](https://github.com/jhelvy/us-china-pev-policy-2025/blob/main/data/README.md) in the "data" folder.
