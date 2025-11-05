@@ -64,7 +64,7 @@ dt_china %>%
   slice(1:5) %>%
   select(brand, model, model_year, price, range_mi)
 
-# Models above 500 miles range
+# Models above 400 miles range
 dt_china %>%
   filter(model_year == 2024) %>%
   filter(range_mi > 400) %>%
@@ -292,7 +292,6 @@ dt_combined %>%
   ) +
   panel_border()
 
-
 # US-China 2024 by Class ----
 
 fig1 <- dt_combined %>%
@@ -385,79 +384,110 @@ ggsave(
   device = cairo_pdf
 )
 
+# Range adjustments ----
+
+# The Chinese EVs are tested on the CLTC driving cycle, which can over-estimate
+# range compared to the U.S. EPA cycle by as much as 30%.
+# As a result, it is worth looking at adjusted versions of
+# the figures that put the ranges on level playing fields.
+# Here I make two adjusted versions:
+# 1) EPA adjustment: Reduce the Chinese ranges by 30% (range / 1.3)
+# 2) CLTAC adjustment: Increase the U.S. ranges by 30% (range * 1.3)
+
 # Version with 30% range reduction for Chinese BEVs
 
-dt_adjusted <- dt_combined %>%
+dt_adjusted_epa <- dt_combined %>%
   filter(powertrain == 'BEV') %>%
   filter(model_year == 2024) %>%
   mutate(
     price = price * 1000,
-    range_mi = ifelse(country == 'China', range_mi * 0.7, range_mi)
+    range_mi = ifelse(country == 'China', range_mi / 1.3, range_mi)
   )
 
-dt_adjusted %>%
-  ggplot() +
-  geom_point(
-    aes(
-      x = range_mi,
-      y = price,
-      color = country
-    ),
-    size = 0.8,
-    alpha = 0.6
-  ) +
-  facet_wrap(vars(class), nrow = 1) +
-  theme_minimal_grid(font_family = font_main) +
-  scale_y_continuous(
-    breaks = seq(0, ylim, 20000),
-    labels = scales::dollar
-  ) +
-  scale_x_continuous(
-    breaks = seq(0, 600, 150)
-  ) +
-  coord_cartesian(
-    xlim = c(0, 600),
-    ylim = c(0, ylim)
-  ) +
-  scale_color_manual(values = c(unlist(colors))) +
-  labs(
-    x = 'Range (miles)',
-    y = 'Price ($USD)',
-    title = "Price vs. Range for all Model Year 2024 BEVs in <span style='color:#E41A1C'>China</span> and the <span style='color:#2171B5'>USA</span>",
-    subtitle = "China offers more affordable options across all range categories"
-  ) +
-  theme(
-    plot.title.position = "plot",
-    plot.caption.position = "plot",
-    plot.title = element_markdown(family = font_main),
-    legend.position = 'none',
-    panel.background = element_rect(fill = "white", color = NA),
-    plot.background = element_rect(fill = "white", color = NA),
-    strip.background = element_rect(fill = "gray", color = NA)
-  ) +
-  panel_border() +
-  geom_text_repel(
-    data = dt_adjusted %>%
-      mutate(vehicle = ifelse(target_model, vehicle, '')),
-    aes(
-      x = range_mi,
-      y = price,
-      color = country,
-      label = vehicle
-    ),
-    # Add these parameters to improve label placement
-    size = 3.5,
-    family = font_main,
-    force = 50, # Increase repulsion force
-    box.padding = 1, # Padding around labels
-    segment.color = "grey50", # Color of connector lines
-    min.segment.length = 0, # Show all connector lines
-    max.overlaps = Inf, # Don't discard any labels
-    seed = 9 # For reproducible results
+dt_adjusted_cltc <- dt_combined %>%
+  filter(powertrain == 'BEV') %>%
+  filter(model_year == 2024) %>%
+  mutate(
+    price = price * 1000,
+    range_mi = ifelse(country == 'USA', range_mi * 1.3, range_mi)
   )
+
+make_plot <- function(data) {
+  data %>%
+    ggplot() +
+    geom_point(
+      aes(
+        x = range_mi,
+        y = price,
+        color = country
+      ),
+      size = 0.8,
+      alpha = 0.6
+    ) +
+    facet_wrap(vars(class), nrow = 1) +
+    theme_minimal_grid(font_family = font_main) +
+    scale_y_continuous(
+      breaks = seq(0, ylim, 20000),
+      labels = scales::dollar
+    ) +
+    scale_x_continuous(
+      breaks = seq(0, 600, 150)
+    ) +
+    coord_cartesian(
+      xlim = c(0, 600),
+      ylim = c(0, ylim)
+    ) +
+    scale_color_manual(values = c(unlist(colors))) +
+    labs(
+      x = 'Range (miles)',
+      y = 'Price ($USD)',
+      title = "Price vs. Range for all Model Year 2024 BEVs in <span style='color:#E41A1C'>China</span> and the <span style='color:#2171B5'>USA</span>",
+      subtitle = "China offers more affordable options across all range categories"
+    ) +
+    theme(
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.title = element_markdown(family = font_main),
+      legend.position = 'none',
+      panel.background = element_rect(fill = "white", color = NA),
+      plot.background = element_rect(fill = "white", color = NA),
+      strip.background = element_rect(fill = "gray", color = NA)
+    ) +
+    panel_border() +
+    geom_text_repel(
+      data = data %>%
+        mutate(vehicle = ifelse(target_model, vehicle, '')),
+      aes(
+        x = range_mi,
+        y = price,
+        color = country,
+        label = vehicle
+      ),
+      # Add these parameters to improve label placement
+      size = 3.5,
+      family = font_main,
+      force = 50, # Increase repulsion force
+      box.padding = 1, # Padding around labels
+      segment.color = "grey50", # Color of connector lines
+      min.segment.length = 0, # Show all connector lines
+      max.overlaps = Inf, # Don't discard any labels
+      seed = 9 # For reproducible results
+    )
+}
+
+make_plot(dt_adjusted_epa)
 
 ggsave(
-  file.path('figs', 'fig1-range-price-adjusted.png'),
+  file.path('figs', 'fig1-range-price-adjusted-epa.png'),
+  width = 11,
+  height = 4.5,
+  dpi = 300
+)
+
+make_plot(dt_adjusted_cltc)
+
+ggsave(
+  file.path('figs', 'fig1-range-price-adjusted-cltc.png'),
   width = 11,
   height = 4.5,
   dpi = 300
