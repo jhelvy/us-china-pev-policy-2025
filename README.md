@@ -31,7 +31,7 @@ Figure 1 also has two adjusted versions:
 In these versions, the ranges are adjusted to account for the fact that the driving ranges for the U.S. and Chinese BEVs are determined using different driving cycles. Specifically, the 5-cycle EPA is used in the U.S., and the CLTC is used in China. The CLTC cycle likely over-estimates the EPA cycle range by approximately 30% according to industry experts. To account for this, the "EPA adjusted" version shows the results with the Chinese BEV ranges _reduced_ by 30% as an approximation of the over-estimated range. Likewise, the "CLTC adjusted" version shows the results with the U.S. BEV ranges _increased_ by 30%.
 
 An interactive version of this chart can also be seen here:
-[]()
+[https://jhelvy.github.io/science-2025/](https://jhelvy.github.io/science-2025/)
 
 The app allows you to:
 
