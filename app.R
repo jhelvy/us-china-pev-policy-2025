@@ -1,18 +1,3 @@
----
-title: "Interactive Figure 1: BEV Price vs. Range (2024)"
-format: html
-filters:
-  - shinylive
----
-
-<center>
-The app is best viewed in landscape mode on a mobile device.
-</center>
-
-```{shinylive-r}
-#| standalone: true
-#| viewerHeight: 600
-
 library(shiny)
 library(plotly)
 
@@ -30,10 +15,21 @@ ui <- fluidPage(
   fluidRow(
     column(
       12,
-      h4("Range Adjustment"),
+      h4("Fig. 1 with range adjustment"),
       p(
-        "Different testing cycles (EPA in US, CLTC in China) produce different range estimates.
-        CLTC tends to over-estimate range by ~30% compared to EPA."
+        "Different testing cycles (EPA in U.S., CLTC in China) produce different range estimates, with the CLTC tending to over-estimate range by ~30% compared to EPA. As as result, this app allows users to adjust ranges for vehicles sold in either country to better compare the BEV offerings in each country on a more equivalent basis."
+      )
+    ), 
+    column(
+      12,
+      p(
+        'The original (unadjusted) figure is published in: Helveston, John P. (2025) "How collaboration with China can revitalize US automotive innovation"',
+        tags$i("Science"),
+        ". 390(6772), pg. 446-448. ",
+        tags$a(
+          href = "https://doi.org/10.1126/science.adz0541",
+          "DOI: 10.1126/science.adz0541"
+        )
       )
     )
   ),
@@ -71,22 +67,11 @@ ui <- fluidPage(
   fluidRow(
     column(
       12,
-      plotlyOutput("range_price_plot", height = "360px")
+      plotlyOutput("range_price_plot", height = "360px", width = "900px")
     )
   ),
 
-  hr(),
-
-  fluidRow(
-    column(
-      12,
-      p("Data source: Helveston (2025) Science 390(6772)"),
-      p(tags$a(
-        href = "https://doi.org/10.1126/science.adz0541",
-        "DOI: 10.1126/science.adz0541"
-      ))
-    )
-  )
+  hr()
 )
 
 # Server ----
@@ -116,25 +101,6 @@ server <- function(input, output) {
     return(data)
   })
 
-  # Create subtitle based on adjustment
-  plot_subtitle <- reactive({
-    if (input$adjust_country == "none") {
-      return(NULL)
-    } else if (input$adjust_country == "china") {
-      return(paste0(
-        "China ranges reduced by ",
-        input$adjustment_percent,
-        "% to approximate EPA testing cycle"
-      ))
-    } else {
-      return(paste0(
-        "USA ranges increased by ",
-        input$adjustment_percent,
-        "% to approximate CLTC testing cycle"
-      ))
-    }
-  })
-
   # Render plot
   output$range_price_plot <- renderPlotly({
     data <- adjusted_data()
@@ -162,10 +128,7 @@ server <- function(input, output) {
             round(range_mi, 0),
             " miles<br>",
             "Price: $",
-            format(price, big.mark = ",", scientific = FALSE),
-            "<br>",
-            "Class: ",
-            class
+            format(price, big.mark = ",", scientific = FALSE)
           ),
           hovertemplate = '%{text}<extra></extra>',
           showlegend = FALSE
@@ -210,19 +173,16 @@ server <- function(input, output) {
           text = paste0(
             "Price vs. Range for all Model Year 2024 BEVs in ",
             "<span style='color:#E41A1C'>China</span> and the ",
-            "<span style='color:#2171B5'>USA</span><br>",
-            "<sub>",
-            plot_subtitle(),
-            "</sub>"
+            "<span style='color:#2171B5'>USA</span>"
           ),
           font = list(size = 12)
         ),
         showlegend = FALSE,
-        margin = list(t = 50, b = 30)
+        margin = list(t = 50, b = 30),
+        autosize = FALSE
       )
   })
 }
 
 # Run app ----
 shinyApp(ui = ui, server = server)
-```
