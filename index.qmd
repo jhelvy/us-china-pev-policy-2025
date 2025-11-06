@@ -1,15 +1,11 @@
 ---
-format: 
-  html:
-    resources: 
-      - shinylive-sw.js
+title: "Interactive Figure 1: BEV Price vs. Range (2024)"
+format: html
 filters:
   - shinylive
 ---
 
 <center>
-This can take ~30s to load as it runs entirely in your browser...just leave the window open until it loads<br>
-
 The app is best viewed in landscape mode on a mobile device.
 </center>
 
@@ -31,8 +27,6 @@ ylim <- 120000
 
 # UI ----
 ui <- fluidPage(
-  titlePanel("Interactive Figure 1: BEV Price vs. Range (2024)"),
-
   fluidRow(
     column(
       12,
@@ -168,7 +162,10 @@ server <- function(input, output) {
             round(range_mi, 0),
             " miles<br>",
             "Price: $",
-            format(price, big.mark = ",", scientific = FALSE)
+            format(price, big.mark = ",", scientific = FALSE),
+            "<br>",
+            "Class: ",
+            class
           ),
           hovertemplate = '%{text}<extra></extra>',
           showlegend = FALSE

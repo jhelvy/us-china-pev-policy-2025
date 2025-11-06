@@ -12,11 +12,10 @@ project:
 website:  
   repo-url: https://github.com/jhelvy/us-china-pev-policy-2025
   repo-actions: [edit, issue]
-  title: "Title"
   navbar:
     search: false
     left:
-      - text: "Screener"
+      - text: "Figure 1"
         file: index.qmd
     right: 
       - icon: github
