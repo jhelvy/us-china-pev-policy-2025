@@ -214,6 +214,7 @@ dt_combined <- dt_us %>%
   mutate(country = 'USA') %>%
   select(
     vehicle,
+    make,
     model,
     model_year,
     range_mi,
@@ -227,7 +228,8 @@ dt_combined <- dt_us %>%
     dt_china %>%
       mutate(country = 'China') %>%
       select(
-        vehicle,
+        vehicle, 
+        make = brand,
         model,
         model_year,
         range_mi,
@@ -299,6 +301,42 @@ fig1 <- dt_combined %>%
   filter(powertrain == 'BEV') %>%
   filter(model_year == 2024) %>%
   mutate(price = price * 1000)
+
+# Remove existing Zeekr 001 (less accurate data)
+fig1 <- fig1 %>%
+  filter(!(make == 'Zeekr' & model == '001'))
+
+# Add missing 2024 models manually
+additional_models <- tibble(
+  vehicle = c(
+    "Lucid Air Pure",
+    "Lucid Air Touring",
+    "Lucid Air Grand Touring",
+    "Zeekr 001 WE (95 kWh, dual-motor)",
+    "Zeekr 001 WE (100 kWh, single-motor)",
+    "Zeekr 001 ME (100 kWh, dual-motor)",
+    "Zeekr 001 YOU (100 kWh, dual-motor)"
+  ),
+  make = c("Lucid", "Lucid", "Lucid", "Zeekr", "Zeekr", "Zeekr", "Zeekr"),
+  model = c(
+    "Air Pure",
+    "Air Touring",
+    "Air Grand Touring",
+    "001 WE (95 kWh, dual-motor)",
+    "001 WE (100 kWh, single-motor)",
+    "001 ME (100 kWh, dual-motor)",
+    "001 YOU (100 kWh, dual-motor)"
+  ),
+  model_year = 2024,
+  range_mi = c(419, 411, 516, 419, 466, 438, 438),
+  price = c(69900, 77900, 109900, 37370, 37370, 41500, 45700),
+  powertrain = "BEV",
+  country = c("USA", "USA", "USA", "China", "China", "China", "China"),
+  class = factor("Car", levels = c("Car", "SUV", "Pickup Truck")),
+  target_model = FALSE
+)
+
+fig1 <- bind_rows(fig1, additional_models)
 
 # Save formatted plot data
 write_csv(fig1, here::here('data_processed', 'fig1-range-price.csv'))
