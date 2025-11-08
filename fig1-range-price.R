@@ -228,7 +228,7 @@ dt_combined <- dt_us %>%
     dt_china %>%
       mutate(country = 'China') %>%
       select(
-        vehicle, 
+        vehicle,
         make = brand,
         model,
         model_year,
@@ -434,19 +434,13 @@ ggsave(
 
 # Version with 30% range reduction for Chinese BEVs
 
-dt_adjusted_epa <- dt_combined %>%
-  filter(powertrain == 'BEV') %>%
-  filter(model_year == 2024) %>%
+dt_adjusted_epa <- fig1 %>%
   mutate(
-    price = price * 1000,
     range_mi = ifelse(country == 'China', range_mi / 1.3, range_mi)
   )
 
-dt_adjusted_cltc <- dt_combined %>%
-  filter(powertrain == 'BEV') %>%
-  filter(model_year == 2024) %>%
+dt_adjusted_cltc <- fig1 %>%
   mutate(
-    price = price * 1000,
     range_mi = ifelse(country == 'USA', range_mi * 1.3, range_mi)
   )
 
