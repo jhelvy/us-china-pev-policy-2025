@@ -516,6 +516,13 @@ ggsave(
   dpi = 300
 )
 
+ggsave(
+  file.path('figs', 'fig1-range-price-adjusted-epa.pdf'),
+  width = 11,
+  height = 4.5,
+  device = cairo_pdf
+)
+
 make_plot(dt_adjusted_cltc)
 
 ggsave(
@@ -523,4 +530,11 @@ ggsave(
   width = 11,
   height = 4.5,
   dpi = 300
+)
+
+ggsave(
+  file.path('figs', 'fig1-range-price-adjusted-cltc.pdf'),
+  width = 11,
+  height = 4.5,
+  device = cairo_pdf
 )
